@@ -1,0 +1,45 @@
+.mode columns
+.headers on 
+.nullvalue NULL 
+
+PRAGMA foreign_keys = ON;
+
+CREATE TRIGGER IF NOT EXISTS AUMENTAR_VAGAS
+BEFORE INSERT ON ALUNOUC
+FOR EACH ROW
+WHEN EXISTS(
+    SELECT * FROM OcorrenciaUc
+    WHERE OCORRENCIAUC.codUc = new.codUC
+)
+BEGIN
+UPDATE OcorrenciaUc
+set numInscricoes = numInscricoes + 1
+WHERE  OCORRENCIAUC.codUc = new.codUC;
+END;
+
+
+CREATE TRIGGER IF NOT EXISTS AVOID_ADDING_INSCRICAO
+BEFORE INSERT ON ALUNOUC
+FOR EACH ROW
+WHEN EXISTS(
+    SELECT * FROM OcorrenciaUc
+    where OCORRENCIAUC.codUc = new.codUC
+    AND OcorrenciaUc.numInscricoes = 500
+   
+)
+BEGIN
+SELECT RAISE(ABORT,"Vacancies Limit exceeded");
+END;
+
+CREATE TRIGGER IF NOT EXISTS DIMINUIR_VAGAS
+BEFORE DELETE ON ALUNOUC
+FOR EACH ROW
+WHEN EXISTS(
+    SELECT * FROM OCORRENCIAUC
+    WHERE OCORRENCIAUC.codUc = OLD.codUc
+)
+BEGIN
+	UPDATE OCORRENCIAUC
+    SET numInscricoes = numInscricoes - 1
+    WHERE  OCORRENCIAUC.codUc = OLD.codUC;
+END;
