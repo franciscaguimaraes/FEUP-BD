@@ -1,7 +1,7 @@
 # FEUP-BD
 
 ## Grades
-- Project: 19,3/20
-- Exam: xx/20
+- Project (35%): 19,3/20,0
+- Exam (65%): xx/20,0
 
-### Final: xx/20
+### Final Grade: xx/20
